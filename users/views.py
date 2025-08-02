@@ -36,19 +36,17 @@ def logout_view(request):
 def profile_view(request):
     profile = request.user.userprofile
     if request.method == 'POST':
-        form = UserProfile(request.POST, instance=profile)
+        form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Профиль успешно обновлен!')
             return redirect('users:profile')
-        else:
-            messages.warning(request, 'Исправьте ошибки в форме!')
     else:
-        UserProfile(instance=profile)
+        form = UserProfileForm(instance=profile)
+    
     return render(request, 'users/profile.html', {
         'form': form,
         'profile': profile,
-        'users': request.user,
+        'user': request.user
     })
 
 @login_required
