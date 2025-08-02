@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Компьютер: {{ computer.name }}</h2>
+    <p><strong>Серийный номер:</strong> {{ computer.serial_number|default:"Не указан" }}</p>
+    <p><strong>Кабинет:</strong> {{ computer.location }}</p>
+    <p><strong>Ответственный:</strong> {{ computer.technician.username|default:"Не назначен" }}</p>
+    <p><strong>Статус:</strong> {{ computer.get_status_display }}</p>
+    <p><strong>Дата создания:</strong> {{ computer.created_at }}</p>
+    <p><strong>Дата обновления:</strong> {{ computer.updated_at }}</p>
+    <a href="{% url 'assets:computer_edit' computer.pk %}" class="btn btn-warning">Редактировать</a>
+    <a href="{% url 'assets:computer_delete' computer.pk %}" class="btn btn-danger">Удалить</a>
+    <a href="{% url 'assets:computer_list' %}" class="btn btn-secondary">Назад</a>
+</div>
+{% endblock %}

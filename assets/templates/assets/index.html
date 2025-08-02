@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Добро пожаловать в систему управления инвентарем</h1>
+    <p>Текущая дата и время: {{ current_datetime }}</p>
+    <h2>Доступные разделы</h2>
+    <ul class="list-group">
+        <li class="list-group-item"><a href="{% url 'users:profile' %}">Профиль пользователя</a> - управление вашим профилем.</li>
+        <li class="list-group-item"><a href="{% url 'users:user_list' %}">Список пользователей</a> - просмотр всех пользователей.</li>
+        <li class="list-group-item"><a href="{% url 'assets:computer_list' %}">Компьютеры</a> - управление компьютерами с поиском.</li>
+        <li class="list-group-item"><a href="{% url 'assets:printer_list' %}">Принтеры</a> - управление принтерами с поиском.</li>
+    </ul>
+    <h2>Планируемые разделы</h2>
+    <ul class="list-group">
+        <li class="list-group-item"># Закрыто - Картриджи - учёт и замена картриджей.</li>
+        <li class="list-group-item"># Закрыто - Склад - управление запасами техники.</li>
+        <li class="list-group-item"># Закрыто - Перемещения - отслеживание перемещений активов.</li>
+        <li class="list-group-item"># Закрыто - Отчёты - статистика по инвентарю.</li>
+    </ul>
+</div>
+{% endblock %}

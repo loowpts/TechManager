@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Список компьютеров</h2>
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Поиск по названию, серийному номеру или кабинету" value="{{ query }}">
+            <button type="submit" class="btn btn-primary">Найти</button>
+        </div>
+    </form>
+    <a href="{% url 'assets:computer_create' %}" class="btn btn-primary mb-3">Добавить компьютер</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Серийный номер</th>
+                <th>Кабинет</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for computer in computers %}
+                <tr>
+                    <td>{{ computer.name }}</td>
+                    <td>{{ computer.serial_number|default:"Не указан" }}</td>
+                    <td>{{ computer.location }}</td>
+                    <td>{{ computer.get_status_display }}</td>
+                    <td>
+                        <a href="{% url 'assets:computer_detail' computer.pk %}" class="btn btn-info btn-sm">Просмотр</a>
+                        <a href="{% url 'assets:computer_edit' computer.pk %}" class="btn btn-warning btn-sm">Редактировать</a>
+                        <a href="{% url 'assets:computer_delete' computer.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">Нет компьютеров</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

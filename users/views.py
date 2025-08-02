@@ -8,10 +8,10 @@ from django.contrib import messages
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('assets:computer_list')
+        return redirect('assets:index')
     
     if request.method == 'POST':
-        form = LoginForm(request.POST)
+        form = LoginForm(data=request.POST)
         if form.is_valid():
             user = authenticate(
                 request,
@@ -19,10 +19,18 @@ def login_view(request):
                 password=form.cleaned_data['password']
             )
             if user is not None:
-                login(request, user)
-                return redirect('assets:computer_list')
+                if user.is_active:
+                    login(request, user)
+                    return redirect('assets:index')
+                else:
+                    messages.error(request, "Этот пользователь неактивен.")
+            else:
+                messages.error(request, "Неверное имя пользователя или пароль.")
+        else:
+            messages.error(request, "Проверьте правильность введённых данных.")
     else:
         form = LoginForm()
+    
     return render(request, 'users/login.html', {'form': form})
 
 @login_required
