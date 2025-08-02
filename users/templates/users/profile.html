@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Профиль пользователя: {{ user.username }}</h2>
+    <p>Email: {{ user.email|default:"Не указан" }}</p>
+    <p>Отдел: {{ profile.department|default:"Не указан" }}</p>
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+</div>
+{% endblock %}

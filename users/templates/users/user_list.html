@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Список пользователей</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Отдел</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.user.username }}</td>
+                    <td>{{ user.user.email|default:"Не указан" }}</td>
+                    <td>{{ user.department|default:"Не указан" }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="3">Нет пользователей</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
