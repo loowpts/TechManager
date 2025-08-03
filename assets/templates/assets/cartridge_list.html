@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Список картриджей</h1>
+    <div class="mb-3">
+        <label for="printer_select" class="form-label">Выберите принтер:</label>
+        <select id="printer_select" class="form-select" onchange="window.location.href='{% url 'assets:cartridge_list' %}?printer_id=' + this.value">
+            <option value="">Все принтеры</option>
+            {% for printer in printers %}
+            <option value="{{ printer.id }}" {% if selected_printer_id == printer.id|stringformat:"s" %}selected{% endif %}>
+                {{ printer.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <a href="{% url 'assets:add_cartridge' %}" class="btn btn-success mb-3">Добавить новый картридж</a>
+    <a href="{% url 'admin:assets_cartridge_add' %}" class="btn btn-primary mb-3">Добавить через админку</a>
+    <ul class="list-group">
+        {% for cartridge in cartridges %}
+        <li class="list-group-item">
+            {{ cartridge.name }} ({{ cartridge.compatible_cartridge }})
+            | На складе: {{ cartridge.stock_quantity }} шт.
+            {% if cartridge.is_connected %} | Подключён{% endif %}
+            <a href="{% url 'assets:connect_cartridge' cartridge.id %}" class="btn btn-info btn-sm ms-2">Подключить</a>
+        </li>
+        {% empty %}
+        <li class="list-group-item">Нет совместимых картриджей.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

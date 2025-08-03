@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Подключение картриджа</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <p>Картридж: {{ cartridge.name }} ({{ cartridge.compatible_cartridge }}) для принтера {{ cartridge.printer_model.name }}</p>
+    <p>На складе: {{ cartridge.stock_quantity }} шт.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Подключить</button>
+    </form>
+    <a href="{% url 'assets:cartridge_list' cartridge.printer_model.id %}" class="btn btn-secondary mt-3">Назад</a>
+</div>
+{% endblock %}

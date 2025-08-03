@@ -1,15 +1,42 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
 {% block content %}
 <div class="container mt-5">
-    <h2>Принтер: {{ printer.name }}</h2>
-    <p><strong>Серийный номер:</strong> {{ printer.serial_number|default:"Не указан" }}</p>
-    <p><strong>Кабинет:</strong> {{ printer.location }}</p>
-    <p><strong>Ответственный:</strong> {{ computer.technician.username|default:"Не назначен" }}</p>
-    <p><strong>Статус:</strong> {{ printer.get_status_display }}</p>
-    <p><strong>Дата создания:</strong> {{ printer.created_at }}</p>
-    <p><strong>Дата обновления:</strong> {{ printer.updated_at }}</p>
-    <a href="{% url 'assets:printer_edit' printer.pk %}" class="btn btn-warning">Редактировать</a>
-    <a href="{% url 'assets:printer_delete' printer.pk %}" class="btn btn-danger">Удалить</a>
-    <a href="{% url 'assets:printer_list' %}" class="btn btn-secondary">Назад</a>
+    <h1>Принтер: {{ printer.name }}</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if connected_cartridge %}
+        <h3>Текущий картридж</h3>
+        <p>{{ connected_cartridge.name }} ({{ connected_cartridge.compatible_cartridge }})</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" name="action" value="return" class="btn btn-warning">Вернуть на склад</button>
+            <button type="submit" name="action" value="dispose" class="btn btn-danger">Просрочено</button>
+        </form>
+    {% else %}
+        <p>Нет подключённого картриджа.</p>
+    {% endif %}
+
+    <h3>Доступные картриджи</h3>
+    <ul class="list-group">
+        {% for cartridge in available_cartridges %}
+        <li class="list-group-item">
+            {{ cartridge.name }} ({{ cartridge.compatible_cartridge }})
+            | На складе: {{ cartridge.stock_quantity }} шт.
+            <a href="{% url 'assets:connect_cartridge' cartridge.id %}" class="btn btn-success btn-sm ms-2">Подключить</a>
+        </li>
+        {% empty %}
+        <li class="list-group-item">Нет доступных картриджей.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'assets:cartridge_list' printer.id %}" class="btn btn-secondary mt-3">Назад к списку картриджей</a>
 </div>
 {% endblock %}

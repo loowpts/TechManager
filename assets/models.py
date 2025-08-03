@@ -60,3 +60,19 @@ class Printer(models.Model):
     class Meta:
         verbose_name = "Принтер"
         verbose_name_plural = "Принтеры"
+
+
+class Cartridge(models.Model):
+    name = models.CharField(max_length=50, verbose_name='Название картриджа')
+    printer_model = models.ForeignKey(Printer, on_delete=models.CASCADE, verbose_name='Модель принтера')
+    compatible_cartridge = models.CharField(max_length=100, verbose_name='Совместимый картридж')
+    stock_quantity = models.PositiveIntegerField(default=0, verbose_name='Количество на складе')
+    is_connected = models.BooleanField(default=False, verbose_name='Подключен к принтеру')
+    is_disposed = models.BooleanField(default=False, verbose_name='Отправлен в утиль')
+
+    def __str__(self):
+        return f"{self.name} для {self.printer_model}"
+
+    class Meta:
+        verbose_name = 'Картридж'
+        verbose_name_plural = 'Картриджи'

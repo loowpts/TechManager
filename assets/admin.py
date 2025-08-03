@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Computer, Printer
+from .models import Computer, Printer,Cartridge
 
 @admin.register(Computer)
 class ComputerAdmin(admin.ModelAdmin):
@@ -7,7 +7,7 @@ class ComputerAdmin(admin.ModelAdmin):
     list_filter = ['status', 'location', 'technician']
     search_fields = ['name', 'serial_number', 'location']
     readonly_fields = ['created_at', 'updated_at']
-    list_per_page = 20  # Ограничение записей на страницу для удобства
+    list_per_page = 20
     ordering = ['name']
 
     def get_search_results(self, request, queryset, search_term):
@@ -42,3 +42,10 @@ class PrinterAdmin(admin.ModelAdmin):
                 location__icontains=search_term
             )
         return queryset, use_distinct
+
+
+@admin.register(Cartridge)
+class CartridgeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'printer_model', 'compatible_cartridge', 'stock_quantity', 'is_connected', 'is_disposed']
+    list_filter = ['printer_model', 'is_connected', 'is_disposed']
+    search_fields = ['name', 'printer_model__name', 'compatible_cartridge']

@@ -3,10 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import UserProfile
 
-# Отменяем стандартную регистрацию модели User
 admin.site.unregister(User)
 
-# Инлайн для UserProfile
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
@@ -15,7 +13,6 @@ class UserProfileInline(admin.StackedInline):
     fields = ['department', 'created_at', 'updated_at']
     readonly_fields = ['created_at', 'updated_at']
 
-# Кастомная админка для User
 @admin.register(User)
 class CustomUserAdmin(BaseUserAdmin):
     inlines = [UserProfileInline]
@@ -38,7 +35,6 @@ class CustomUserAdmin(BaseUserAdmin):
         return obj.userprofile.department or 'Без отдела'
     get_department.short_description = 'Отдел'
 
-# Отдельная админка для UserProfile (опционально)
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'department', 'created_at', 'updated_at']
