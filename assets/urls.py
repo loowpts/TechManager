@@ -20,4 +20,8 @@ urlpatterns = [
     path('printers/add/', views.printer_create, name='printer_create'),
     path('printers/<int:pk>/edit/', views.printer_update, name='printer_edit'),
     path('printers/<int:pk>/delete/', views.printer_delete, name='printer_delete'),
+    path('stock/', views.stock_list, name='stock_list'),
+    path('stock/add/', views.add_stock, name='add_stock'),
+    path('movement/', views.movement_list, name='movement_list'),
+    path('movement/add/', views.add_movement, name='add_movement'),
 ]

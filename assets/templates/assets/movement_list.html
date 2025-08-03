@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Список перемещений</h1>
+    <a href="{% url 'assets:add_movement' %}" class="btn btn-success mb-3">Добавить перемещение</a>
+    <ul class="list-group">
+        {% for movement in movements %}
+        <li class="list-group-item">
+            {{ movement.get_item_type_display }} (ID: {{ movement.item_id }}) - {{ movement.quantity }} шт. ({{ movement.get_movement_type_display }})
+            {% if movement.from_location %} От: {{ movement.from_location }}{% endif %}
+            {% if movement.to_location %} К: {{ movement.to_location }}{% endif %}
+            | Дата: {{ movement.date_moved|date:"d.m.Y H:i" }} | Кем: {{ movement.moved_by.username }}
+        </li>
+        {% empty %}
+        <li class="list-group-item">Нет перемещений.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

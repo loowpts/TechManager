@@ -76,3 +76,51 @@ class Cartridge(models.Model):
     class Meta:
         verbose_name = 'Картридж'
         verbose_name_plural = 'Картриджи'
+
+
+from django.db import models
+from django.contrib.auth.models import User
+from .models import Printer, Cartridge, Computer
+
+class Stock(models.Model):
+    item = models.ForeignKey(Cartridge, on_delete=models.CASCADE, verbose_name='Элемент')
+    quantity = models.PositiveIntegerField(default=0, verbose_name='Количество')
+    location = models.CharField(max_length=100, verbose_name='Местоположение')
+    last_updated = models.DateTimeField(auto_now=True, verbose_name='Последнее обновление')
+
+    def __str__(self):
+        return f"{self.item.name} - {self.quantity} шт. в {self.location}"
+
+    class Meta:
+        verbose_name = 'Запас'
+        verbose_name_plural = 'Запасы'
+
+class Movement(models.Model):
+    MOVEMENT_TYPE_CHOICES = [
+        ('in', 'Поступление'),
+        ('out', 'Выбытие'),
+        ('transfer', 'Перемещение'),
+    ]
+    item_type = models.CharField(max_length=20, choices=[('computer', 'Компьютер'), ('printer', 'Принтер')], verbose_name='Тип техники')
+    item_id = models.PositiveIntegerField(verbose_name='ID техники')
+    quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
+    movement_type = models.CharField(max_length=20, choices=MOVEMENT_TYPE_CHOICES, verbose_name='Тип перемещения')
+    from_location = models.CharField(max_length=100, verbose_name='Откуда', blank=True, null=True)
+    to_location = models.CharField(max_length=100, verbose_name='Куда', blank=True, null=True)
+    date_moved = models.DateTimeField(auto_now_add=True, verbose_name='Дата перемещения')
+    moved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Кем перемещено')
+    is_disposed = models.BooleanField(default=False, verbose_name='Отправлено в утиль')
+
+    def __str__(self):
+        return f"{self.get_item_type_display()} (ID: {self.item_id}) - {self.movement_type}"
+
+    class Meta:
+        verbose_name = 'Перемещение'
+        verbose_name_plural = 'Перемещения'
+
+    def get_item(self):
+        if self.item_type == 'computer':
+            return Computer.objects.get(id=self.item_id)
+        elif self.item_type == 'printer':
+            return Printer.objects.get(id=self.item_id)
+        return None

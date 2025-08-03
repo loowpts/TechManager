@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Computer, Printer,Cartridge
+from .models import Computer, Printer, Cartridge, Stock, Movement
 
 @admin.register(Computer)
 class ComputerAdmin(admin.ModelAdmin):
@@ -49,3 +49,21 @@ class CartridgeAdmin(admin.ModelAdmin):
     list_display = ['name', 'printer_model', 'compatible_cartridge', 'stock_quantity', 'is_connected', 'is_disposed']
     list_filter = ['printer_model', 'is_connected', 'is_disposed']
     search_fields = ['name', 'printer_model__name', 'compatible_cartridge']
+
+
+@admin.register(Stock)
+class StockAdmin(admin.ModelAdmin):
+    list_display = ['item', 'quantity', 'location', 'last_updated']
+    list_filter = ['location']
+    search_fields = ['item__name', 'location']
+
+
+@admin.register(Movement)
+class MovementAdmin(admin.ModelAdmin):
+    list_display = ['get_item_type_display', 'item_id', 'quantity', 'movement_type', 'from_location', 'to_location', 'date_moved', 'moved_by']
+    list_filter = ['movement_type', 'date_moved']
+    search_fields = ['item_id', 'from_location', 'to_location']
+
+    def get_item_type_display(self, obj):
+        return obj.get_item_type_display()
+    get_item_type_display.short_description = 'Тип техники'
